@@ -1,7 +1,7 @@
 # coding-tbg
 Another approach at a coding game: a turn-based tactics one.
 
-##Roadmap:
+## Roadmap:
 
     - [ ] basic classes
         - [ ] unit
@@ -19,6 +19,6 @@ Another approach at a coding game: a turn-based tactics one.
         - [ ] tie-in with architecture
     - [ ] code parsing for two-squad fight
 
-##Future plans:
+## Future plans:
 
     - [ ] fully tree-like architecture: world-squad-unit
