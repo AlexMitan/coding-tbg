@@ -1,10 +1,17 @@
+var cmutils = {};
 
-function pickFrom(arr) {
+
+// utility function for printing objects using their `toString` methods
+cmutils.log = (...any) => console.log(...any.map(String));
+
+// Array ops
+
+cmutils.pickFrom = function(arr) {
     var i = Math.floor(Math.random() * arr.length);
     return arr[i];
 }
 
-function makeFromArr(arr, len) {
+cmutils.makeFromArr = function(arr, len) {
     var elem = "";
     for (var i = 0; i < len; i++) {
         elem += pickFrom(arr);
@@ -12,21 +19,30 @@ function makeFromArr(arr, len) {
     return elem;
 }
 
-function removeFromArr(arr, elem) {
+cmutils.removeFromArr = function(arr, elem) {
     let idx = arr.indexOf(elem);
     if (idx > -1){
         arr.splice(idx, 1);
     }
 }
 
-function degToRad(deg) {
+cmutils.addToArrUnique = function(arr, elem) {
+    let idx = arr.indexOf(elem);
+    if (idx === -1){
+        arr.push(elem);
+    }
+}
+
+// Angle conversions
+
+cmutils.degToRad = function(deg) {
     return deg / 180 * Math.PI;
 }
-function radToDeg(rad) {
+cmutils.radToDeg = function(rad) {
     return rad * 180 / Math.PI;
 }
 
-function getVal(ctx, x, y) {
+cmutils.getVal = function(ctx, x, y) {
     var ext = ctx.getImageData(x, y, 1, 1).data;
     if (ext[3] == 0) {
         return 0;
@@ -35,7 +51,7 @@ function getVal(ctx, x, y) {
     }
 }
 
-function genMat(w, h, init, explicit) {
+cmutils.genMat = function(w, h, init, explicit) {
     var mat = [];
     for (var x = 0; x < w; x++) {
         mat.push([]);
@@ -49,7 +65,7 @@ function genMat(w, h, init, explicit) {
     return mat;
 }
 
-function logMat(mat) {
+cmutils.logMat = function(mat) {
     for (var y = mat[0].length - 1; y >= 0; y--) {
         var str = ""
         for (var x = 0; x < mat.length; x++) {
@@ -61,7 +77,7 @@ function logMat(mat) {
 }
 
 
-function randomWithin(rMin, rMax, seed) {
+cmutils.randomWithin = function(rMin, rMax, seed) {
     if (seed === undefined) {
         var max = rMax || 1;
         var min = rMin || 0;
@@ -76,47 +92,47 @@ function randomWithin(rMin, rMax, seed) {
     }
 }
 
-function norm(value, min, max) {
+cmutils.norm = function(value, min, max) {
     return (value - min) / (max - min);
 };
 
-function lerp(norm, min, max) {
+cmutils.lerp = function(norm, min, max) {
     return (max - min) * norm + min;
 };
 
-function map(value, sourceMin, sourceMax, destMin, destMax) {
+cmutils.map = function(value, sourceMin, sourceMax, destMin, destMax) {
     return lerp(norm(value, sourceMin, sourceMax), destMin, destMax);
 };
 
-function clamp(value, min, max) {
+cmutils.clamp = function(value, min, max) {
     return Math.min(Math.max(value, Math.min(min, max)), Math.max(min, max));
 };
 
-function distP(p0, p1) {
+cmutils.distP = function(p0, p1) {
     var dx = p0.x - p1.x,
         dy = p0.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
 };
 
-function dist(x0, y0, x1, y1) {
+cmutils.dist = function(x0, y0, x1, y1) {
     var dx = x1 - x0,
         dy = y1 - y0;
     return Math.sqrt(dx * dx + dy * dy);
 };
 
-function randomFloat(min, max) {
+cmutils.randomFloat = function(min, max) {
     return min + Math.random() * (max - min);
 };
 
-function randomInt(min, max) {
+cmutils.randomInt = function(min, max) {
     return Math.floor(min + Math.random() * (max - min + 1));
 };
 
-function inRange(value, min, max) {
+cmutils.inRange = function(value, min, max) {
     return value >= Math.min(min, max) && value <= Math.max(min, max);
 };
 
-function angleQuad(angle) {
+cmutils.angleQuad = function(angle) {
     if (angle >= 0)
         if (angle <= Math.PI / 2)
             return 1;
@@ -124,27 +140,27 @@ function angleQuad(angle) {
     else return 0;
 };
 
-function circleCollision(c0, c1) {
+cmutils.circleCollision = function(c0, c1) {
     return utils.distance(c0, c1) <= c0.radius + c1.radius;
 };
 
-function circlePointCollision(x, y, circle) {
+cmutils.circlePointCollision = function(x, y, circle) {
     return utils.distanceXY(x, y, circle.x, circle.y) < circle.radius;
 };
 
-function pointInRect(x, y, rect) {
+cmutils.pointInRect = function(x, y, rect) {
     return utils.inRange(x, rect.x, rect.x + rect.width) && utils.inRange(y, rect.y, rect.y + rect.height);
 };
 
-function rangeIntersect(min0, max0, min1, max1) {
+cmutils.rangeIntersect = function(min0, max0, min1, max1) {
     return Math.max(min0, max0) >= Math.min(min1, max1) && Math.min(min0, max0) <= Math.max(min1, max1);
 };
 
-function rectIntersect(r0, r1) {
+cmutils.rectIntersect = function(r0, r1) {
     return utils.rangeIntersect(r0.x, r0.x, r0.width, r1.x, r1.x + r1.width) && utils.rangeIntersect(r0.y, r0.y + height, r1.y, r1.y + height);
 };
 
-function segmentIntersect(p0, p1, p2, p3) {
+cmutils.segmentIntersect = function(p0, p1, p2, p3) {
     var A1 = p1.y - p0.y,
         B1 = p0.x - p1.x,
         C1 = A1 * p0.x + B1 * p0.y,
@@ -175,7 +191,7 @@ function segmentIntersect(p0, p1, p2, p3) {
     }
 }
 
-function segTouching(s0, s1) {
+cmutils.segTouching = function(s0, s1) {
     if (s0.x0 == s1.x1 && s0.y0 == s1.y1 ||
         s0.x1 == s1.x0 && s0.y1 == s1.y0 ||
         s0.x0 == s1.x0 && s0.y0 == s1.y0 ||
@@ -185,7 +201,7 @@ function segTouching(s0, s1) {
     return false;
 }
 
-function segInters(s0, s1, allowTouching) {
+cmutils.segInters = function(s0, s1, allowTouching) {
     if (!allowTouching && segTouching(s0, s1)) {
         return null;
     }
@@ -226,3 +242,5 @@ function segInters(s0, s1, allowTouching) {
         return null;
     }
 }
+
+module.exports = cmutils;
