@@ -1,0 +1,30 @@
+handler:
+    if anyone_cares_about_5_meter_proximity:
+        check near pairs
+        for each, notify pairs of each other's proximity
+    if anyone_cares_about_collisions:
+        check collision pairs
+        for each, notify pairs of colliding
+    if anyone_cares_about_shooting:
+        check who fired lately
+        notify who cares about others shooting
+
+world:
+    channels:
+        collide:
+            player, asteroids, enemies
+        firing:
+            player, enemies
+        near:
+            
+            enemies, player
+
+    handle:
+        if any in collide:
+            check collisions
+            notify collision pairs
+        if any in firing:
+            check firing
+            notify of who fired
+
+firing puts notifications in the firing channel

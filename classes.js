@@ -4,3 +4,9 @@ class Unit {
         this.dmg = dmg;
     }
 }
+
+class Squad {
+    constructor() {
+        
+    }
+}
