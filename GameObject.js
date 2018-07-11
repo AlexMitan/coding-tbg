@@ -44,17 +44,17 @@ class GameObject {
 }
 GameObject.id = 0;
 
-if (false) {
-    var world = {};
-    var mothership = new GameObject(world);
+if (true) {
+    let world = {};
+    let mothership = new GameObject(world);
     
-    var fighter = new GameObject(world, mothership);
-    var interceptor = new GameObject(world, mothership);
+    let fighter = new GameObject(world, mothership);
+    let interceptor = new GameObject(world, mothership);
     
-    var fighterCannon1 = new GameObject(world, fighter);
-    var fighterCannon2 = new GameObject(world, fighter);
-    var interceptorCannon1 = new GameObject(world, interceptor);
-    var interceptorCannon2 = new GameObject(world, interceptor);
+    let fighterCannon1 = new GameObject(world, fighter);
+    let fighterCannon2 = new GameObject(world, fighter);
+    let interceptorCannon1 = new GameObject(world, interceptor);
+    let interceptorCannon2 = new GameObject(world, interceptor);
     
     mothership.recurse('getID');
     for (let obj of [fighter, interceptorCannon1, mothership]) {
