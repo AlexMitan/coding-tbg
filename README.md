@@ -3,10 +3,10 @@ Another approach at a coding game: a turn-based tactics one.
 
 ## Roadmap:
 
-- [ ] basic classes
-    - [ ] unit
-        - [ ] attrs
-        - [ ] attack()
+- [x] basic classes
+    - [x] unit
+        - [x] attrs
+        - [x] attack()
     - [ ] squad
     - [ ] ability
 - [ ] squads
