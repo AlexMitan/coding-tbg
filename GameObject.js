@@ -1,10 +1,10 @@
 class GameObject {
-    constructor(world, prnt, addToprnt=false) {
+    constructor(world, parent, addToParent=false) {
         this.world = world;
         this.children = [];
-        this.prnt = prnt || null;
-        if (prnt && addToprnt) {
-            prnt.addChild(this);
+        this.parent = parent || null;
+        if (parent && addToParent) {
+            parent.addChild(this);
         }
         this.id = GameObject.id;
         GameObject.id += 1;
@@ -20,8 +20,8 @@ class GameObject {
     }
     getRoot() {
         let obj = this;
-        while (obj.prnt != null) {
-            obj = obj.prnt;
+        while (obj.parent != null) {
+            obj = obj.parent;
         }
         return obj;
     }
@@ -37,8 +37,8 @@ class GameObject {
         }
     }
     remove() {
-        if (this.prnt) {
-            this.prnt.removeChild(this);
+        if (this.parent) {
+            this.parent.removeChild(this);
         }
     }
 }
