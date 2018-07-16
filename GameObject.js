@@ -1,5 +1,5 @@
 class GameObject {
-    constructor(world, parent, addToParent=false) {
+    constructor(world, parent, addToParent=true) {
         this.world = world;
         this.children = [];
         this.parent = parent || null;
@@ -57,7 +57,7 @@ if (true) {
     let interceptorCannon2 = new GameObject(world, interceptor);
     
     mothership.recurse('getID');
-    for (let obj of [fighter, interceptorCannon1, mothership]) {
-        console.log(obj.getRoot().id);
-    }
+    // for (let obj of [fighter, interceptorCannon1, mothership]) {
+    //     console.log(obj.getRoot().id);
+    // }
 }
