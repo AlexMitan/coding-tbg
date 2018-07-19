@@ -1,4 +1,4 @@
-var cmutils = {};
+const cmutils = {};
 
 
 // utility function for printing objects using their `toString` methods

@@ -1,5 +1,7 @@
+const utils = require('./cmutils');
+
 class GameObject {
-    constructor(world, parent, addToParent=true) {
+    constructor(world, parent, addToParent=false) {
         this.world = world;
         this.children = [];
         this.parent = parent || null;
@@ -16,7 +18,10 @@ class GameObject {
         }
     }
     removeChild(gameObj){
-        removeFromArr(this.children, gameObj);
+        let idx = this.children.indexOf(gameObj);
+        if (idx > -1){
+            this.children.splice(idx, 1);
+        }
     }
     getRoot() {
         let obj = this;
@@ -46,18 +51,22 @@ GameObject.id = 0;
 
 if (true) {
     let world = {};
-    let mothership = new GameObject(world);
+    let mothership = new GameObject(world, true);
     
-    let fighter = new GameObject(world, mothership);
-    let interceptor = new GameObject(world, mothership);
+    let fighter = new GameObject(world, mothership, true);
+    let interceptor = new GameObject(world, mothership, true);
     
-    let fighterCannon1 = new GameObject(world, fighter);
-    let fighterCannon2 = new GameObject(world, fighter);
-    let interceptorCannon1 = new GameObject(world, interceptor);
-    let interceptorCannon2 = new GameObject(world, interceptor);
+    let fighterCannon1 = new GameObject(world, fighter, true);
+    let fighterCannon2 = new GameObject(world, fighter, true);
+    let interceptorCannon1 = new GameObject(world, interceptor, true);
+    let interceptorCannon2 = new GameObject(world, interceptor, true);
     
+    interceptor.remove();
     mothership.recurse('getID');
+    console.log(mothership);
+    
     // for (let obj of [fighter, interceptorCannon1, mothership]) {
     //     console.log(obj.getRoot().id);
     // }
 }
+module.exports = { GameObject };

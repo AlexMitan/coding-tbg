@@ -1,8 +1,8 @@
 function genMat(w, h, init) {
-    var mat = [];
-    for (var y = 0; y < h; y++) {
+    let mat = [];
+    for (let y = 0; y < h; y++) {
         mat.push([]);
-        for (var x = 0; x < w; x++) {
+        for (let x = 0; x < w; x++) {
             mat[y].push(init || 0);
         }
     }
@@ -37,8 +37,8 @@ setInterval(() => {
     if (ctr++ % 10 == 0) {
         fieldOld[randomInt(1, h-2)][randomInt(1, w-2)] += randomInt(4, 4);
     }
-    for (var y = 0; y < h; y++) {
-        for (var x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
             // fire on tile
             let fire = fieldOld[y][x];
             // reduce fire on tile
@@ -60,9 +60,9 @@ setInterval(() => {
     }
     // print code
     console.log("-".repeat(w + 2));
-    for (var y = 0; y < h; y++) {
+    for (let y = 0; y < h; y++) {
         let str = "|";
-        for (var x = 0; x < w; x++) {
+        for (let x = 0; x < w; x++) {
             str += fieldNew[y][x] > 0 ? Math.floor(fieldNew[y][x]) : " ";
         }
         str += '|'

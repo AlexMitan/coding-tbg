@@ -1,6 +1,6 @@
 "use strict";
-var utils = require('./cmutils.js');
-var { log, addToArrUnique, removeFromArr, shuffle } = utils;
+const utils = require('./cmutils.js');
+const { log, addToArrUnique, removeFromArr, shuffle } = utils;
 
 
 function getRandom(group) {
