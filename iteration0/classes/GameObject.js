@@ -1,4 +1,4 @@
-const utils = require('./cmutils');
+const utils = require('../lib/cmutils');
 
 class GameObject {
     constructor(parent=null, addToParent=false, name=null) {
@@ -13,6 +13,7 @@ class GameObject {
         GameObject.id += 1;
     }
     root() {
+        // TODO: this doesn't change much, set it once and then just return it after
         // get topmost game object, the "world"
         let obj = this;
         while (obj.parent != null) {
