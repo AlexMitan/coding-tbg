@@ -49,7 +49,7 @@ class GameObject {
 }
 GameObject.id = 0;
 
-if (true) {
+if (false) {
     let world = {};
     let mothership = new GameObject(world, true);
     

@@ -1,1 +1,0 @@
-const { GameObject } = require('./GameObject');
