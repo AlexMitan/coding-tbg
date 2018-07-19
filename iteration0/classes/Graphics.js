@@ -13,10 +13,38 @@ class CharGraphics extends GameObject {
         }
     }
     receiveMsg(sender, str, data) {
+        if (str === "damage" && sender == this.parent) {
+            console.log(`${this.name} got that ${sender.name}`);
+            
+            // shoot at
+            let ctx = this.ctx;
+            let { x, y } = this.parent;
+            for (let target of data.targets) {
+                // let { x:targetX, y:targetY } = target;
+                let targetX = target.x;
+                let targetY = target.y;
+                // yellow line
+                ctx.save();
+                ctx.strokeStyle = "orange";
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(targetX, targetY);
+                ctx.stroke();
+                for (let i=0; i<10; i++) {
+                    // random spark
+                    ctx.beginPath();
+                    ctx.moveTo(targetX, targetY);
+                    ctx.lineTo(targetX + Math.random() * 180 - 90,
+                               targetY + Math.random() * 180 - 90);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
         if (str === "render") {
             let ctx = this.ctx;
             let { x, y, hp, baseHp } = this.parent;
-            console.log(`${this.name} is rendering a ${this.colour} [${this.char}] with ${hp} hp.`);
+            // console.log(`${this.name} is rendering a ${this.colour} [${this.char}] with ${hp} hp.`);
             ctx.save();
             ctx.font = "30px verdana";
             ctx.fillStyle = this.colour;

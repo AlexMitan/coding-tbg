@@ -25,28 +25,45 @@ window.onload = function() {
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
     for (let i=1; i<=5; i++) {
-        let redDrone = new Unit(reds, 3, `red-drone`);
-        redDrone.x = utils.randomInt(100, 300);
-        redDrone.y = utils.randomInt(100, 700);
+        let redDrone = new Unit(reds, 7, 1, `red-drone`);
+        redDrone.x = utils.randomInt(w * 0.1, w * 0.4);
+        redDrone.y = utils.randomInt(h * 0.2, h * 0.8);
         redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
         reds.addChild(redDrone);
 
-        let blueDrone = new Unit(blues, 3, `blue-drone`);
-        blueDrone.x = utils.randomInt(400, 700);
-        blueDrone.y = utils.randomInt(100, 700);
+        let blueDrone = new Unit(blues, 7, 2, `blue-drone`);
+        blueDrone.x = utils.randomInt(w * 0.4, w * 0.9);
+        blueDrone.y = utils.randomInt(h * 0.2, h * 0.8);
         blueDrone.addChild(new CharGraphics(blueDrone, ctx, "blue", "D"));
         blues.addChild(blueDrone);
     }
     
     // ctx.fillText("HAA", 20, 20);
     // ctx.strokeText("HAA", 60, 20);
-    reds.children[0].sendMsg("DAMAGE", {
-        amount: 2,
-        targets: [blues.children[0], blues.children[1]]
-    });
+    function update() {
+        // rerender
+        ctx.clearRect(0, 0, w, h);
+        world.sendMsg("render");
+        if (reds.children.length > 0) {
+            // random attack of red
+            utils.pickFrom(reds.children).attack([utils.pickFrom(blues.children)]);
+        } else {
+            ctx.fillText("BLUE WINS", w/2, h/2);
+            return;
+        }
+
+        if (blues.children.length > 0) {
+            // random attack of red
+            utils.pickFrom(blues.children).attack([utils.pickFrom(reds.children)]);
+        } else {
+            ctx.fillText("RED WINS", w/2, h/2);
+            return;
+        }
+
+    }
+    setInterval(update, 200);
     // console.log("reds:", reds.children.map(elem => elem.toString()).join("  "));
     // console.log("blues:", blues.children.map(elem => elem.toString()).join("  "));
-    world.sendMsg("render");
 }
 
 
@@ -162,10 +179,38 @@ class CharGraphics extends GameObject {
         }
     }
     receiveMsg(sender, str, data) {
+        if (str === "damage" && sender == this.parent) {
+            console.log(`${this.name} got that ${sender.name}`);
+            
+            // shoot at
+            let ctx = this.ctx;
+            let { x, y } = this.parent;
+            for (let target of data.targets) {
+                // let { x:targetX, y:targetY } = target;
+                let targetX = target.x;
+                let targetY = target.y;
+                // yellow line
+                ctx.save();
+                ctx.strokeStyle = "orange";
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(targetX, targetY);
+                ctx.stroke();
+                for (let i=0; i<10; i++) {
+                    // random spark
+                    ctx.beginPath();
+                    ctx.moveTo(targetX, targetY);
+                    ctx.lineTo(targetX + Math.random() * 180 - 90,
+                               targetY + Math.random() * 180 - 90);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
         if (str === "render") {
             let ctx = this.ctx;
             let { x, y, hp, baseHp } = this.parent;
-            console.log(`${this.name} is rendering a ${this.colour} [${this.char}] with ${hp} hp.`);
+            // console.log(`${this.name} is rendering a ${this.colour} [${this.char}] with ${hp} hp.`);
             ctx.save();
             ctx.font = "30px verdana";
             ctx.fillStyle = this.colour;
@@ -195,9 +240,10 @@ module.exports = { CharGraphics };
 const { GameObject } = require('./GameObject');
 
 class Unit extends GameObject{
-    constructor(parent, hp, name="drone") {
+    constructor(parent, hp, damage, name="drone") {
         super(parent, false, name);
         this.name += `-${this.id}`;
+        this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
     }
@@ -214,7 +260,7 @@ class Unit extends GameObject{
     // }
     receiveMsg(sender, str, data) {
         super.receiveMsg(sender, str, data);
-        if (str === "DAMAGE") {
+        if (str === "damage") {
             if (data.targets === undefined || data.targets.indexOf(this) > -1) {
                 let damage = data.amount;
                 console.log(`${this.name} took ${damage} damage from ${sender.name}`);
@@ -230,6 +276,12 @@ class Unit extends GameObject{
             this.dead = true;
             console.log(this.toString(), 'died');
         }
+    }
+    attack(targets) {
+        this.sendMsg("damage", {
+            amount: this.damage,
+            targets: targets
+        });
     }
     toString() {
         // return `[${this.dead ? "dead " : ""}${this.name} ${this.hp}]`;

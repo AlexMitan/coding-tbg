@@ -1,9 +1,10 @@
 const { GameObject } = require('./GameObject');
 
 class Unit extends GameObject{
-    constructor(parent, hp, name="drone") {
+    constructor(parent, hp, damage, name="drone") {
         super(parent, false, name);
         this.name += `-${this.id}`;
+        this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
     }
@@ -20,7 +21,7 @@ class Unit extends GameObject{
     // }
     receiveMsg(sender, str, data) {
         super.receiveMsg(sender, str, data);
-        if (str === "DAMAGE") {
+        if (str === "damage") {
             if (data.targets === undefined || data.targets.indexOf(this) > -1) {
                 let damage = data.amount;
                 console.log(`${this.name} took ${damage} damage from ${sender.name}`);
@@ -36,6 +37,12 @@ class Unit extends GameObject{
             this.dead = true;
             console.log(this.toString(), 'died');
         }
+    }
+    attack(targets) {
+        this.sendMsg("damage", {
+            amount: this.damage,
+            targets: targets
+        });
     }
     toString() {
         // return `[${this.dead ? "dead " : ""}${this.name} ${this.hp}]`;
