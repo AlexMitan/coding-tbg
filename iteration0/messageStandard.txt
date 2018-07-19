@@ -1,0 +1,8 @@
+structure: sender, str, data
+
+str:
+    "DAMAGE"
+        amount: int
+        targets: []
+            if undefined, all
+            // TODO: relay message with targets field wiped if all children are affected
