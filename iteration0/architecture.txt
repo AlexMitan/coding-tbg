@@ -1,0 +1,14 @@
+- world is GameObj
+    - fleet is GameObj
+        - unit is GameObj
+            - data is GameObj?
+            - graphic is GameObj
+            - ??? is GameObj
+
+- GameObj
+    - add/remove child
+    - receive a message
+        - check sender and type, then...
+        - relay it above
+        - relay it below
+        - other actions on self
