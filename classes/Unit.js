@@ -22,7 +22,8 @@ class Unit extends GameObject{
     receiveMsg(sender, str, data) {
         super.receiveMsg(sender, str, data);
         if (str === "damage") {
-            if (data.targets === undefined || data.targets.indexOf(this) > -1) {
+            // if unit in targets
+            if (data.targets.indexOf(this) > -1) {
                 let damage = data.amount;
                 console.log(`${this.name} took ${damage} damage from ${sender.name}`);
                 this.receiveDamage(damage);

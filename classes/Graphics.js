@@ -13,13 +13,16 @@ class CharGraphics extends GameObject {
         }
     }
     receiveMsg(sender, str, data) {
-        if (str === "damage" && sender == this.parent) {
-            console.log(`${this.name} got that ${sender.name}`);
+        // HACK: better checks for proper targets needed
+        if (str === "damage" && sender == this.parent && data.targets && data.targets.length > 0) {
+            // console.log(`${this.name} got that ${sender.name} shot`);
             
             // shoot at
             let ctx = this.ctx;
             let { x, y } = this.parent;
             for (let target of data.targets) {
+                console.log(data.targets);
+                
                 // let { x:targetX, y:targetY } = target;
                 let targetX = target.x;
                 let targetY = target.y;
