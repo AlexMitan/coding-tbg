@@ -3,7 +3,7 @@ bub = {
     ctx: null,
     log: function(text) {
         console.log(text + " has been ctx-logged");
-        this.ctx.fillText(text, 20, 20)
+        this.ctx.fillText(text, 20, 20);
     },
     ///// Basics
     mark: function(x, y, colour, r) {
@@ -79,3 +79,5 @@ bub = {
         this.rect(x - d, y - d, x + d, y + d);
     },
 };
+
+module.exports = bub;
