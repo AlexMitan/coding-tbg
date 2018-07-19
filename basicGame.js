@@ -48,11 +48,14 @@ window.onload = function() {
             if (turn % 4 == 0) {
                 // reds' turn
                 // most wounded
-                let wounded = blues.children.slice().sort((a, b) => a.health > b.health)[0]
+                let wounded = blues.children.slice().sort((a, b) => a.health > b.health)[0];
                 utils.pickFrom(reds.children).attack([wounded]);
                 // utils.pickFrom(reds.children).attack([utils.pickFrom(blues.children)]);
             } else if (turn % 4 == 2) {
                 // blue' turn
+                // let targets = reds.children.slice().sort((a, b) => a.health > b.health);
+                // let healthy = targets[targets.length - 1];
+                // utils.pickFrom(blues.children).attack([healthy]);
                 utils.pickFrom(blues.children).attack([utils.pickFrom(reds.children)]);
             }
         } else {
