@@ -7,21 +7,26 @@ Another approach at a coding game: a turn-based tactics one.
     - [x] unit
         - [x] attrs
         - [x] attack()
-    - [ ] squad
+    - [x] squad
     - [ ] ability
 - [ ] squads
 - [ ] two-squad random fight
     - [x] with basic units
 - [ ] two-squad tactical fight
-    - [x] with basic units
+    - [ ] with basic units
+- [x] tree-based game model
+    - [x] all game objects are subtrees
+    - [x] event/message system
 - [ ] iterator-based game model, multi-step actions
-    - [x] basic AP simulation
+    - [ ] basic AP simulation
     - [ ] state interruptions
     - [ ] integrate with Jini or some AI model
-- [ ] graphics for two-squad fight
-    - [ ] npm setup
+- [x] graphics for two-squad fight
+    - [x] npm setup
+    - [x] canvas integration with tree architecture
     - [ ] d3 setup
     - [ ] d3 multicluster thing
+    - [x] tie-in with basic model
     - [ ] tie-in with architecture
 - [ ] create the Jini language
     - [ ] Lox-inspired syntax
@@ -31,4 +36,4 @@ Another approach at a coding game: a turn-based tactics one.
 
 ## Future plans:
 
-- [ ] fully tree-like architecture: world-squad-unit
+- [x] fully tree-like architecture: world-squad-unit
