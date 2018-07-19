@@ -95,17 +95,28 @@ window.onload = function() {
                     .remove();
         }
     }
-    function boomAnim(svg, x, y, size) {
-        for(let i=0; i<20; i++){
+    function boomAnim(svg, x, y, size, duration=500) {
+        let sparks = 10;
+        let radius = size * 0.7;
+        svg.append('ellipse')
+            .attrs({'cx': x, 'cy': y, 'rx': 0.1 * size, 'ry': 0.05 * size, 'fill': 'white'})
+            .transition()
+                .duration(duration)
+                .attrs({'rx': size, 'ry': size/6})
+                .style('opacity', 0)
+                .remove();
+        for(let i=0; i<sparks; i++){
+            let delay = i * duration / sparks / 5;
+            // let sparkDur = duration - i * duration / sparks;
             svg.append('circle')
-                .attrs({'cx': x, 'cy': y, 'r': 0.2, 'fill': 'white'})
-                .transition(d3.easeCubicOut)
-                    .delay(i * 10)
-                    .duration(500)
-                    .attr('cx', x + Math.random() * 30 - 15)
-                    .attr('cy', y + Math.random() * 30 - 15)
-                    .attrs({'r': 0.4 * size, 'fill': 'orange'})
-                    .style('opacity', 0.1)
+                .attrs({'cx': x, 'cy': y, 'r': 0, 'fill': 'white'})
+                .transition()
+                    .delay(delay)
+                    .duration(duration - delay)
+                    .attr('cx', x + Math.random() * radius - radius/2)
+                    .attr('cy', y + Math.random() * radius - radius/2)
+                    .attrs({'r': 0.3 * size, 'fill': 'orange'})
+                    .style('opacity', 0)
                     .remove();
         }
     }
@@ -139,4 +150,5 @@ window.onload = function() {
         svg: svg
     }
     console.log(sim);
+    d3.interval(() => boomAnim(svg, Math.random() * width, Math.random() * height, 50 + Math.random() * 200, 500), 300);
 }
