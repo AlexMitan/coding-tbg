@@ -24,10 +24,11 @@ Another approach at a coding game: a turn-based tactics one.
 - [x] graphics for two-squad fight
     - [x] npm setup
     - [x] canvas integration with tree architecture
-    - [ ] d3 setup
+    - [x] d3 setup
+    - [x] d3 integration with tree architecture
     - [ ] d3 multicluster thing
     - [x] tie-in with basic model
-    - [ ] tie-in with architecture
+    - [x] tie-in with architecture
 - [ ] create the Jini language
     - [ ] Lox-inspired syntax
     - [ ] lexer

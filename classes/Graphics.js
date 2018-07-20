@@ -69,10 +69,11 @@ class CharGraphics extends GameObject {
 }
 
 class BasicSVG extends GameObject {
-    constructor(parent, svg, colour="blue") {
+    constructor(parent, svg, size, colour="blue") {
         // parent is a unit
         super(parent, false, "svgGraphics");
         this.svg = svg;
+        this.size = size;
         this.colour = colour;
         this.name += `-${this.id}`;
         if (!svg) {
@@ -96,24 +97,23 @@ class BasicSVG extends GameObject {
             for (let target of data.targets) {
                 let targetX = target.x;
                 let targetY = target.y;
-                shoot(this.svg, x, y, targetX, targetY, 200);
-                boom(this.svg, targetX, targetY, 30, 200);
+                shoot(this.svg, x, y, targetX, targetY, 200, 'white');
             }
         }
         if (str === "initSVG") {
             let svg = this.svg;
             let { x, y, hp, baseHp } = this.parent;
-            this.ship = makeShip(this.svg, x, y, 8);
+            this.ship = makeShip(this.svg, x, y, this.size);
         }
         if (str === "death" && sender === this.parent) {
             console.log(`${this.name} received death of parent`);
-            boom(this.svg, this.parent.x, this.parent.y, 80, 500, 'cyan');
+            boom(this.svg, this.parent.x, this.parent.y, this.size*2, 500, 'cyan');
         }
     }
 
 }
 
-function shoot(svg, x0, y0, x1, y1, duration) {
+function beam(svg, x0, y0, x1, y1, duration) {
     svg.append('path')
         .attr('d', `M${x0} ${y0} L${x1} ${y1} L${x1} ${y1+2} Z`)
         .attr('fill', 'orange')
@@ -122,6 +122,20 @@ function shoot(svg, x0, y0, x1, y1, duration) {
             .style('opacity', 0)
             .remove();
 }
+
+function shoot(svg, x0, y0, x1, y1, duration, colour='orange') {
+    for (let i=0; i<1; i++) {
+        svg.append('circle')
+            .attrs({'cx':x0, 'cy':y0, 'r':5, 'fill':colour})
+            .transition(d3.easeLinear)
+                .delay(i * 10)
+                .duration(duration)
+                .attrs({'cx':x1, 'cy':y1})
+                .remove()
+                .on('end', () => boom(svg, x1, y1, 40, 200, colour));
+    }
+}
+
 function boom(svg, x, y, size, duration, colour='orange') {
     svg.append('ellipse')
         .attrs({'cx': x, 'cy': y, 'rx': 0.1 * size, 'ry': 0.05 * size, 'fill': colour})

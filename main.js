@@ -29,18 +29,18 @@ window.onload = function() {
     let world = new World();
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
-    for (let i=1; i<=500; i++) {
+    for (let i=1; i<=20; i++) {
         let redDrone = new Unit(reds, 3, 2, `red-drone`);
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         // redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
-        redDrone.addChild(new BasicSVG(redDrone, svg, "red"));
+        redDrone.addChild(new BasicSVG(redDrone, svg, 40, "red"));
         reds.addChild(redDrone);
 
         let blueDrone = new Unit(blues, 3, 2, `blue-drone`);
         blueDrone.x = utils.randomInt(width * 0.6, width * 0.9);
         blueDrone.y = utils.randomInt(height * 0.2, height * 0.7);
-        blueDrone.addChild(new BasicSVG(blueDrone, svg, "blue"));
+        blueDrone.addChild(new BasicSVG(blueDrone, svg, 40, "blue"));
         // blueDrone.addChild(new CharGraphics(blueDrone, ctx, "blue", "D"));
         blues.addChild(blueDrone);
     }
@@ -75,7 +75,7 @@ window.onload = function() {
         world.sendMsg("cleanup");
         turn += 1;
     }
-    setInterval(update, 20);
+    setInterval(update, 100);
     // console.log("reds:", reds.children.map(elem => elem.toString()).join("  "));
     // console.log("blues:", blues.children.map(elem => elem.toString()).join("  "));
 }
@@ -254,10 +254,11 @@ class CharGraphics extends GameObject {
 }
 
 class BasicSVG extends GameObject {
-    constructor(parent, svg, colour="blue") {
+    constructor(parent, svg, size, colour="blue") {
         // parent is a unit
         super(parent, false, "svgGraphics");
         this.svg = svg;
+        this.size = size;
         this.colour = colour;
         this.name += `-${this.id}`;
         if (!svg) {
@@ -281,24 +282,23 @@ class BasicSVG extends GameObject {
             for (let target of data.targets) {
                 let targetX = target.x;
                 let targetY = target.y;
-                shoot(this.svg, x, y, targetX, targetY, 200);
-                boom(this.svg, targetX, targetY, 30, 200);
+                shoot(this.svg, x, y, targetX, targetY, 200, 'white');
             }
         }
         if (str === "initSVG") {
             let svg = this.svg;
             let { x, y, hp, baseHp } = this.parent;
-            this.ship = makeShip(this.svg, x, y, 8);
+            this.ship = makeShip(this.svg, x, y, this.size);
         }
         if (str === "death" && sender === this.parent) {
             console.log(`${this.name} received death of parent`);
-            boom(this.svg, this.parent.x, this.parent.y, 80, 500, 'cyan');
+            boom(this.svg, this.parent.x, this.parent.y, this.size*2, 500, 'cyan');
         }
     }
 
 }
 
-function shoot(svg, x0, y0, x1, y1, duration) {
+function beam(svg, x0, y0, x1, y1, duration) {
     svg.append('path')
         .attr('d', `M${x0} ${y0} L${x1} ${y1} L${x1} ${y1+2} Z`)
         .attr('fill', 'orange')
@@ -307,6 +307,20 @@ function shoot(svg, x0, y0, x1, y1, duration) {
             .style('opacity', 0)
             .remove();
 }
+
+function shoot(svg, x0, y0, x1, y1, duration, colour='orange') {
+    for (let i=0; i<1; i++) {
+        svg.append('circle')
+            .attrs({'cx':x0, 'cy':y0, 'r':5, 'fill':colour})
+            .transition(d3.easeLinear)
+                .delay(i * 10)
+                .duration(duration)
+                .attrs({'cx':x1, 'cy':y1})
+                .remove()
+                .on('end', () => boom(svg, x1, y1, 40, 200, colour));
+    }
+}
+
 function boom(svg, x, y, size, duration, colour='orange') {
     svg.append('ellipse')
         .attrs({'cx': x, 'cy': y, 'rx': 0.1 * size, 'ry': 0.05 * size, 'fill': colour})
