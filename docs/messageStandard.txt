@@ -1,5 +1,11 @@
 structure: sender, str, data
 
+system:
+    each component declares what kind of message it's interested in to avoid unnecessary checks
+    channels?
+    dispatchers?    A->damage->B : A_graphics_firing, B_graphics_takedamage, B_graphics_takedamage
+                    A->kill->B   : A_lifesteal, B_die, achievements_A_kill_B, 
+
 str:
     "DAMAGE"
         amount: int

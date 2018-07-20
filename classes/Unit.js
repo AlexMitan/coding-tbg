@@ -25,18 +25,20 @@ class Unit extends GameObject{
             // if unit in targets
             if (data.targets.indexOf(this) > -1) {
                 let damage = data.amount;
-                console.log(`${this.name} took ${damage} damage from ${sender.name}`);
-                this.receiveDamage(damage);
+                // console.log(`${this.name} took ${damage} damage from ${sender.name}`);
+                this.receiveDamage(damage, sender);
             }
         }
     }
-    receiveDamage(damage) {
+    receiveDamage(damage, attacker) {
         this.hp -= damage;
         if (this.hp <= 0) {
             // TODO: use a dead flag instead and clean?
-            this.removeFromParent();
+            // TODO: remove things recursively?
+            this.sendMsg("death", {});
             this.dead = true;
-            console.log(this.toString(), 'died');
+            console.log(`${this.toString()} killed by ${attacker.toString()}`);
+            this.removeFromParent();
         }
     }
     attack(targets) {

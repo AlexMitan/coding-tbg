@@ -21,9 +21,6 @@ class CharGraphics extends GameObject {
             let ctx = this.ctx;
             let { x, y } = this.parent;
             for (let target of data.targets) {
-                console.log(data.targets);
-                
-                // let { x:targetX, y:targetY } = target;
                 let targetX = target.x;
                 let targetY = target.y;
                 // yellow line
