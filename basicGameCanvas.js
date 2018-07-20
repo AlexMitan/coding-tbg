@@ -24,14 +24,14 @@ window.onload = function() {
     let world = new World();
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
-    for (let i=1; i<=300; i++) {
-        let redDrone = new Unit(reds, 3, 2, `red-drone`);
+    for (let i=1; i<=30; i++) {
+        let redDrone = new Unit(reds, i, Math.floor(i/3), `red-drone`);
         redDrone.x = utils.randomInt(w * 0.1, w * 0.4);
         redDrone.y = utils.randomInt(h * 0.2, h * 0.7);
         redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
         reds.addChild(redDrone);
 
-        let blueDrone = new Unit(blues, 3, 2, `blue-drone`);
+        let blueDrone = new Unit(blues, i, Math.floor(i/3), `blue-drone`);
         blueDrone.x = utils.randomInt(w * 0.6, w * 0.9);
         blueDrone.y = utils.randomInt(h * 0.2, h * 0.7);
         blueDrone.addChild(new CharGraphics(blueDrone, ctx, "blue", "D"));
@@ -54,16 +54,13 @@ window.onload = function() {
         if (reds.children.length > 0 && blues.children.length > 0) {
             if (turn % 4 == 0) {
                 // reds' turn
-                // most wounded
-                let wounded = blues.children.slice().sort((a, b) => a.health > b.health)[0];
-                utils.pickFrom(reds.children).attack([wounded]);
-                // utils.pickFrom(reds.children).attack([utils.pickFrom(blues.children)]);
+                // random
+                utils.pickFrom(reds.children).attack([utils.pickFrom(blues.children)]);
             } else if (turn % 4 == 2) {
                 // blue' turn
-                // let targets = reds.children.slice().sort((a, b) => a.health > b.health);
-                // let healthy = targets[targets.length - 1];
-                // utils.pickFrom(blues.children).attack([healthy]);
-                utils.pickFrom(blues.children).attack([utils.pickFrom(reds.children)]);
+                let mostDamaging = reds.children.slice().sort((a, b) => a.dmg > b.dmg)[0];
+                utils.pickFrom(blues.children).attack([mostDamaging]);
+                // utils.pickFrom(blues.children).attack([utils.pickFrom(reds.children)]);
             }
         } else {
             // game over
@@ -74,7 +71,8 @@ window.onload = function() {
         }    
         turn += 1;
     }
-    setInterval(update, 10);
+    requestAnimationFrame(update);
+    // setInterval(update, 300);
     // console.log("reds:", reds.children.map(elem => elem.toString()).join("  "));
     // console.log("blues:", blues.children.map(elem => elem.toString()).join("  "));
 }
