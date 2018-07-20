@@ -75,7 +75,7 @@ window.onload = function() {
         world.sendMsg("cleanup");
         turn += 1;
     }
-    setInterval(update, 300);
+    setInterval(update, 20);
     // console.log("reds:", reds.children.map(elem => elem.toString()).join("  "));
     // console.log("blues:", blues.children.map(elem => elem.toString()).join("  "));
 }
