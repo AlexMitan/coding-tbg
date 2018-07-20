@@ -29,7 +29,7 @@ window.onload = function() {
     let world = new World();
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
-    for (let i=1; i<=5; i++) {
+    for (let i=1; i<=500; i++) {
         let redDrone = new Unit(reds, 3, 2, `red-drone`);
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
@@ -282,17 +282,17 @@ class BasicSVG extends GameObject {
                 let targetX = target.x;
                 let targetY = target.y;
                 shoot(this.svg, x, y, targetX, targetY, 200);
-                boom(this.svg, targetX, targetY, 40, 200);
+                boom(this.svg, targetX, targetY, 30, 200);
             }
         }
         if (str === "initSVG") {
             let svg = this.svg;
             let { x, y, hp, baseHp } = this.parent;
-            this.ship = makeShip(this.svg, x, y, 30);
+            this.ship = makeShip(this.svg, x, y, 8);
         }
         if (str === "death" && sender === this.parent) {
             console.log(`${this.name} received death of parent`);
-            boom(this.svg, this.parent.x, this.parent.y, 80, 300);
+            boom(this.svg, this.parent.x, this.parent.y, 80, 500, 'cyan');
         }
     }
 
@@ -307,9 +307,9 @@ function shoot(svg, x0, y0, x1, y1, duration) {
             .style('opacity', 0)
             .remove();
 }
-function boom(svg, x, y, size, duration) {
+function boom(svg, x, y, size, duration, colour='orange') {
     svg.append('ellipse')
-        .attrs({'cx': x, 'cy': y, 'rx': 0.1 * size, 'ry': 0.05 * size, 'fill': 'orange'})
+        .attrs({'cx': x, 'cy': y, 'rx': 0.1 * size, 'ry': 0.05 * size, 'fill': colour})
         .transition()
             .duration(duration)
             .attrs({'rx': size, 'ry': size})

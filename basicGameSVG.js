@@ -28,7 +28,7 @@ window.onload = function() {
     let world = new World();
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
-    for (let i=1; i<=5; i++) {
+    for (let i=1; i<=500; i++) {
         let redDrone = new Unit(reds, 3, 2, `red-drone`);
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
