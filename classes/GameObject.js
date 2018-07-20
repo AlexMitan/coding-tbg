@@ -28,6 +28,10 @@ class GameObject {
         if (log) {
             console.log(`${this.name} received ${str} from ${sender.name}`)
         }
+        if (str === "cleanup" && this.dead === true) {
+            console.log(`${this.name} is being cleaned up.`);
+            this.removeFromParent();
+        }
         if (passToChildren) {
             for (let i=this.children.length - 1; i>=0; i--){
                 let child = this.children[i];
@@ -55,16 +59,17 @@ class GameObject {
         if (this.parent) {
             this.parent.removeChild(this);
         }
+        this.recurse('remove');
     }
     logID() {
         console.log(this.id);
     }
     recurse(fnName, applyToSelf=true) {
-        if (applyToSelf && this[fnName]) {
-            this[fnName]();
-        }
         for (let child of this.children) {
             child.recurse(fnName);
+        }
+        if (applyToSelf && this[fnName]) {
+            this[fnName]();
         }
     }
 }

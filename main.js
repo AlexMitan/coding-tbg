@@ -29,15 +29,15 @@ window.onload = function() {
     let world = new World();
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
-    for (let i=1; i<=30; i++) {
-        let redDrone = new Unit(reds, i, Math.floor(i/3), `red-drone`);
+    for (let i=1; i<=5; i++) {
+        let redDrone = new Unit(reds, 3, 2, `red-drone`);
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         // redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
         redDrone.addChild(new BasicSVG(redDrone, svg, "red"));
         reds.addChild(redDrone);
 
-        let blueDrone = new Unit(blues, i, Math.floor(i/3), `blue-drone`);
+        let blueDrone = new Unit(blues, 3, 2, `blue-drone`);
         blueDrone.x = utils.randomInt(width * 0.6, width * 0.9);
         blueDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         blueDrone.addChild(new BasicSVG(blueDrone, svg, "blue"));
@@ -72,6 +72,7 @@ window.onload = function() {
                 // ctx.fillText("BLUE WINS", w/2, h/2);
             }
         }    
+        world.sendMsg("cleanup");
         turn += 1;
     }
     setInterval(update, 300);
@@ -112,6 +113,10 @@ class GameObject {
         if (log) {
             console.log(`${this.name} received ${str} from ${sender.name}`)
         }
+        if (str === "cleanup" && this.dead === true) {
+            console.log(`${this.name} is being cleaned up.`);
+            this.removeFromParent();
+        }
         if (passToChildren) {
             for (let i=this.children.length - 1; i>=0; i--){
                 let child = this.children[i];
@@ -139,16 +144,17 @@ class GameObject {
         if (this.parent) {
             this.parent.removeChild(this);
         }
+        this.recurse('remove');
     }
     logID() {
         console.log(this.id);
     }
     recurse(fnName, applyToSelf=true) {
-        if (applyToSelf && this[fnName]) {
-            this[fnName]();
-        }
         for (let child of this.children) {
             child.recurse(fnName);
+        }
+        if (applyToSelf && this[fnName]) {
+            this[fnName]();
         }
     }
 }
@@ -261,9 +267,12 @@ class BasicSVG extends GameObject {
     // removeFromParent() {
         // super.removeFromParent();
     // }
+    remove() {
+        this.ship.remove();
+    }
     receiveMsg(sender, str, data) {
         // HACK: better checks for proper targets needed
-        if (str === "damage" && sender == this.parent && data.targets && data.targets.length > 0) {
+        if (str === "damage" && sender === this.parent && data.targets && data.targets.length > 0) {
             console.log(`${this.name} got that ${sender.name} shot`);
             
             // shoot at
@@ -276,14 +285,14 @@ class BasicSVG extends GameObject {
                 boom(this.svg, targetX, targetY, 40, 200);
             }
         }
-        if (str === "render") {
-            let svg = this.svg;
-            let { x, y, hp, baseHp } = this.parent;
-        }
         if (str === "initSVG") {
             let svg = this.svg;
             let { x, y, hp, baseHp } = this.parent;
-            this.graphic = makeShip(this.svg, x, y, 30);
+            this.ship = makeShip(this.svg, x, y, 30);
+        }
+        if (str === "death" && sender === this.parent) {
+            console.log(`${this.name} received death of parent`);
+            boom(this.svg, this.parent.x, this.parent.y, 80, 300);
         }
     }
 
@@ -382,7 +391,6 @@ class Unit extends GameObject{
             this.sendMsg("death", {});
             this.dead = true;
             console.log(`${this.toString()} killed by ${attacker.toString()}`);
-            this.removeFromParent();
         }
     }
     attack(targets) {

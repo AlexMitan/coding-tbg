@@ -82,9 +82,12 @@ class BasicSVG extends GameObject {
     // removeFromParent() {
         // super.removeFromParent();
     // }
+    remove() {
+        this.ship.remove();
+    }
     receiveMsg(sender, str, data) {
         // HACK: better checks for proper targets needed
-        if (str === "damage" && sender == this.parent && data.targets && data.targets.length > 0) {
+        if (str === "damage" && sender === this.parent && data.targets && data.targets.length > 0) {
             console.log(`${this.name} got that ${sender.name} shot`);
             
             // shoot at
@@ -97,14 +100,14 @@ class BasicSVG extends GameObject {
                 boom(this.svg, targetX, targetY, 40, 200);
             }
         }
-        if (str === "render") {
-            let svg = this.svg;
-            let { x, y, hp, baseHp } = this.parent;
-        }
         if (str === "initSVG") {
             let svg = this.svg;
             let { x, y, hp, baseHp } = this.parent;
-            this.graphic = makeShip(this.svg, x, y, 30);
+            this.ship = makeShip(this.svg, x, y, 30);
+        }
+        if (str === "death" && sender === this.parent) {
+            console.log(`${this.name} received death of parent`);
+            boom(this.svg, this.parent.x, this.parent.y, 80, 300);
         }
     }
 

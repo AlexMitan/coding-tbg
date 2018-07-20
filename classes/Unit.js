@@ -38,7 +38,6 @@ class Unit extends GameObject{
             this.sendMsg("death", {});
             this.dead = true;
             console.log(`${this.toString()} killed by ${attacker.toString()}`);
-            this.removeFromParent();
         }
     }
     attack(targets) {

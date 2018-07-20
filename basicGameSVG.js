@@ -28,15 +28,15 @@ window.onload = function() {
     let world = new World();
     let reds = new GameObject(world, true, "reds");
     let blues = new GameObject(world, true, "blues");
-    for (let i=1; i<=30; i++) {
-        let redDrone = new Unit(reds, i, Math.floor(i/3), `red-drone`);
+    for (let i=1; i<=5; i++) {
+        let redDrone = new Unit(reds, 3, 2, `red-drone`);
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         // redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
         redDrone.addChild(new BasicSVG(redDrone, svg, "red"));
         reds.addChild(redDrone);
 
-        let blueDrone = new Unit(blues, i, Math.floor(i/3), `blue-drone`);
+        let blueDrone = new Unit(blues, 3, 2, `blue-drone`);
         blueDrone.x = utils.randomInt(width * 0.6, width * 0.9);
         blueDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         blueDrone.addChild(new BasicSVG(blueDrone, svg, "blue"));
@@ -71,6 +71,7 @@ window.onload = function() {
                 // ctx.fillText("BLUE WINS", w/2, h/2);
             }
         }    
+        world.sendMsg("cleanup");
         turn += 1;
     }
     setInterval(update, 300);
