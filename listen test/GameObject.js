@@ -26,7 +26,7 @@ class GameObject {
         GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it
         if (GameObject.logMessages) {
-            console.log(`${this.name} received ${str} from ${sender.name}`)
+            console.log(`${this.name} <-- ${str} from ${sender.name}`)
         }
         if (str === "cleanup" && this.dead === true) {
             console.log(`${this.name} is being cleaned up.`);
@@ -62,6 +62,7 @@ class GameObject {
     removeFromParent() {
         if (this.parent !== null) {
             this.parent.removeChild(this);
+            this.parent = null;
         }
     }
     remove() {
