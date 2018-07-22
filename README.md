@@ -1,6 +1,15 @@
 # coding-tbg
 Another approach at a coding game: a turn-based tactics one.
 
+## TODO:
+
+- [ ] static .root property
+- [ ] upper(type) (e.g. upper('fleet') or upper('tile'))
+- [ ] node.siblings()
+- [ ] node.allNodesBelow()
+- [ ] node.allLeaves? (leaves and branches aren't different in the system, may be unnecessary)
+- [ ] node.allChildrenOfType(type) (e.g. tile.allChildrenOfType('graphics'))
+
 ## Roadmap:
 
 - [x] basic classes

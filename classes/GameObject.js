@@ -3,12 +3,13 @@ const utils = require('../lib/cmutils');
 class GameObject {
     constructor(parent=null, addToParent=false, name=null) {
         this.children = [];
-        this.name = name;
         this.parent = parent;
         this.dead = false;
         if (parent && addToParent) {
             parent.addChild(this);
         }
+        this.type = 'gameObject';
+        this.name = name;
         this.id = GameObject.id;
         GameObject.id += 1;
     }
@@ -40,7 +41,7 @@ class GameObject {
         }
     }
     sendMsg(str, data) {
-        // relay a message directly to the world, to be passed down
+        // relay a message directly to the root, to be passed down
         this.root().receiveMsg(this, str, data);
     }
     addChild(gameObj) {
@@ -49,17 +50,23 @@ class GameObject {
             this.children.push(gameObj);
         }
     }
+
+    // REMOVAL
     removeChild(gameObj){
+        // remove a child from the children array
         let idx = this.children.indexOf(gameObj);
         if (idx > -1){
             this.children.splice(idx, 1);
         }
     }
     removeFromParent() {
-        if (this.parent) {
+        if (this.parent !== null) {
             this.parent.removeChild(this);
         }
-        this.recurse('remove');
+    }
+    remove() {
+        // node-specific operations to avoid memory leaks
+        this.recurse('remove', false);
     }
     logID() {
         console.log(this.id);

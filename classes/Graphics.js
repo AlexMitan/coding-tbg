@@ -8,6 +8,7 @@ class CharGraphics extends GameObject {
         this.colour = colour;
         this.char = char;
         this.name += `-${this.id}`;
+        this.type = 'charGraphics';
         if (!ctx) {
             console.warn(`Context for ${this.name} is ${ctx}`);
         }
@@ -76,6 +77,7 @@ class BasicSVG extends GameObject {
         this.size = size;
         this.colour = colour;
         this.name += `-${this.id}`;
+        this.type = 'svgGraphics'
         if (!svg) {
             console.warn(`Parent for ${this.name} is ${svg}`);
         }

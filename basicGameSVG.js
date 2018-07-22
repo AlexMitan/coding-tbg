@@ -1,6 +1,6 @@
 window.onload = function() {
     const { GameObject } = require('./classes/GameObject');
-    const { CharGraphics, BasicSVG } = require('./classes/Graphics');
+    const { CharGraphics, SvgGraphics } = require('./classes/Graphics');
     const { World } = require('./classes/World');
     const { Unit } = require('./classes/Unit');
     const utils = require('./lib/cmutils');
@@ -33,13 +33,13 @@ window.onload = function() {
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         // redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
-        redDrone.addChild(new BasicSVG(redDrone, svg, 40, "red"));
+        redDrone.addChild(new SvgGraphics(redDrone, svg, 40, "red"));
         reds.addChild(redDrone);
 
         let blueDrone = new Unit(blues, 3, 2, `blue-drone`);
         blueDrone.x = utils.randomInt(width * 0.6, width * 0.9);
         blueDrone.y = utils.randomInt(height * 0.2, height * 0.7);
-        blueDrone.addChild(new BasicSVG(blueDrone, svg, 40, "blue"));
+        blueDrone.addChild(new SvgGraphics(blueDrone, svg, 40, "blue"));
         // blueDrone.addChild(new CharGraphics(blueDrone, ctx, "blue", "D"));
         blues.addChild(blueDrone);
     }

@@ -1,0 +1,24 @@
+Field
+    Tile (0,1)
+        Alien squad
+            Zorp
+                ZorpGraphics
+    Tile (0,2)
+    Tile (0,0)
+        Alien squad
+            Zorp
+                ZorpGraphics
+            Zorp
+                ZorpGraphics
+        Human squad
+            Bomber
+                BomberGraphics
+
+1) Nonpropagation conditions
+    Messages have a non-propagation condition for nodes:
+    AoE attack from (0, 0): do not propagate if (node.type == 'tile' and node.distanceFrom(source) > 1)
+
+2) ListensTo
+    Nodes listenTo event types by processing and/or propagating them downwards.
+    Adding a child makes nodes above it listenTo what it listensTo.
+    Removing it causes a recalculation of listenTo for parents.

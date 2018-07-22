@@ -1,7 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 window.onload = function() {
     const { GameObject } = require('./classes/GameObject');
-    const { CharGraphics, BasicSVG } = require('./classes/Graphics');
+    const { CharGraphics, SvgGraphics } = require('./classes/Graphics');
     const { World } = require('./classes/World');
     const { Unit } = require('./classes/Unit');
     const utils = require('./lib/cmutils');
@@ -34,13 +34,13 @@ window.onload = function() {
         redDrone.x = utils.randomInt(width * 0.1, width * 0.4);
         redDrone.y = utils.randomInt(height * 0.2, height * 0.7);
         // redDrone.addChild(new CharGraphics(redDrone, ctx, "red", "D"));
-        redDrone.addChild(new BasicSVG(redDrone, svg, 40, "red"));
+        redDrone.addChild(new SvgGraphics(redDrone, svg, 40, "red"));
         reds.addChild(redDrone);
 
         let blueDrone = new Unit(blues, 3, 2, `blue-drone`);
         blueDrone.x = utils.randomInt(width * 0.6, width * 0.9);
         blueDrone.y = utils.randomInt(height * 0.2, height * 0.7);
-        blueDrone.addChild(new BasicSVG(blueDrone, svg, 40, "blue"));
+        blueDrone.addChild(new SvgGraphics(blueDrone, svg, 40, "blue"));
         // blueDrone.addChild(new CharGraphics(blueDrone, ctx, "blue", "D"));
         blues.addChild(blueDrone);
     }
@@ -253,7 +253,7 @@ class CharGraphics extends GameObject {
     }
 }
 
-class BasicSVG extends GameObject {
+class SvgGraphics extends GameObject {
     constructor(parent, svg, size, colour="blue") {
         // parent is a unit
         super(parent, false, "svgGraphics");
@@ -362,7 +362,7 @@ function makeShip(svg, x, y, size=30) {
     return g;
 }
 
-module.exports = { CharGraphics, BasicSVG };
+module.exports = { CharGraphics, SvgGraphics };
 
 },{"./GameObject":2}],4:[function(require,module,exports){
 const { GameObject } = require('./GameObject');
