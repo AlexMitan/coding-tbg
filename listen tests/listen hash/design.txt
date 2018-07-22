@@ -1,0 +1,4 @@
+nodes have a listen hash: {damage: 1, heal: 2}
+
+when a node is added, its root path adds the hash to each element
+when a node is removed, its root path removes the hash from each element
