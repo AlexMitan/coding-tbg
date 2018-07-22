@@ -86,14 +86,15 @@ window.onload = function() {
 const utils = require('../lib/cmutils');
 
 class GameObject {
-    constructor(parent=null, addToParent=false, name=null) {
+    constructor(parent=null, addToParent=false, type='gameObject', name=null) {
         this.children = [];
-        this.name = name;
         this.parent = parent;
         this.dead = false;
         if (parent && addToParent) {
             parent.addChild(this);
         }
+        this.type = type;
+        this.name = name;
         this.id = GameObject.id;
         GameObject.id += 1;
     }
@@ -107,6 +108,7 @@ class GameObject {
         return obj;
     }
     receiveMsg(sender, str, data) {
+        GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it
         let passToChildren = true;
         let log = false;
@@ -116,6 +118,7 @@ class GameObject {
         if (str === "cleanup" && this.dead === true) {
             console.log(`${this.name} is being cleaned up.`);
             this.removeFromParent();
+            this.remove();
         }
         if (passToChildren) {
             for (let i=this.children.length - 1; i>=0; i--){
@@ -125,7 +128,7 @@ class GameObject {
         }
     }
     sendMsg(str, data) {
-        // relay a message directly to the world, to be passed down
+        // relay a message directly to the root, to be passed down
         this.root().receiveMsg(this, str, data);
     }
     addChild(gameObj) {
@@ -134,17 +137,23 @@ class GameObject {
             this.children.push(gameObj);
         }
     }
+
+    // REMOVAL
     removeChild(gameObj){
+        // remove a child from the children array
         let idx = this.children.indexOf(gameObj);
         if (idx > -1){
             this.children.splice(idx, 1);
         }
     }
     removeFromParent() {
-        if (this.parent) {
+        if (this.parent !== null) {
             this.parent.removeChild(this);
         }
-        this.recurse('remove');
+    }
+    remove() {
+        // node-specific operations to avoid memory leaks
+        this.recurse('remove', false);
     }
     logID() {
         console.log(this.id);
@@ -159,7 +168,7 @@ class GameObject {
     }
 }
 GameObject.id = 0;
-
+GameObject.messagesReceived = 0;
 if (false) {
     let world = new GameObject(null, false, "world");
     let redFleet = new GameObject(world, true, "redFleet");
@@ -193,6 +202,7 @@ class CharGraphics extends GameObject {
         this.colour = colour;
         this.char = char;
         this.name += `-${this.id}`;
+        this.type = 'charGraphics';
         if (!ctx) {
             console.warn(`Context for ${this.name} is ${ctx}`);
         }
@@ -256,7 +266,7 @@ class CharGraphics extends GameObject {
 class SvgGraphics extends GameObject {
     constructor(parent, svg, size, colour="blue") {
         // parent is a unit
-        super(parent, false, "svgGraphics");
+        super(parent, false, 'svgGraphics', 'svgGraphics');
         this.svg = svg;
         this.size = size;
         this.colour = colour;
@@ -265,9 +275,6 @@ class SvgGraphics extends GameObject {
             console.warn(`Parent for ${this.name} is ${svg}`);
         }
     }
-    // removeFromParent() {
-        // super.removeFromParent();
-    // }
     remove() {
         this.ship.remove();
     }
@@ -369,11 +376,11 @@ const { GameObject } = require('./GameObject');
 
 class Unit extends GameObject{
     constructor(parent, hp, damage, name="drone") {
-        super(parent, false, name);
-        this.name += `-${this.id}`;
+        super(parent, false, 'unit', name);
         this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
+        this.name += `-${this.id}`;
     }
     // set group(val) {}
     // addAbility(ability) {
@@ -405,6 +412,10 @@ class Unit extends GameObject{
             this.sendMsg("death", {});
             this.dead = true;
             console.log(`${this.toString()} killed by ${attacker.toString()}`);
+            // clip
+            // this.removeFromParent();
+            // recursively trigger removals
+            // this.remove();
         }
     }
     attack(targets) {
@@ -425,7 +436,7 @@ const { GameObject } = require('./GameObject');
 
 class World extends GameObject{
     constructor() {
-        super(null, false, "world");
+        super(null, false, 'world', 'world');
         this.stats = {
             deaths: {}
         }

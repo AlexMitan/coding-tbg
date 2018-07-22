@@ -25,16 +25,14 @@ class GameObject {
     receiveMsg(sender, str, data) {
         GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it
-        let passToChildren = true;
-        let log = false;
-        if (log) {
+        if (GameObject.logMessages) {
             console.log(`${this.name} received ${str} from ${sender.name}`)
         }
         if (str === "cleanup" && this.dead === true) {
             console.log(`${this.name} is being cleaned up.`);
             this.removeFromParent();
-            this.remove();
         }
+        let passToChildren = true;
         if (passToChildren) {
             for (let i=this.children.length - 1; i>=0; i--){
                 let child = this.children[i];

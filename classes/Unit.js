@@ -2,11 +2,11 @@ const { GameObject } = require('./GameObject');
 
 class Unit extends GameObject{
     constructor(parent, hp, damage, name="drone") {
-        super(parent, false, name);
-        this.name += `-${this.id}`;
+        super(parent, false, 'unit', name);
         this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
+        this.name += `-${this.id}`;
     }
     // set group(val) {}
     // addAbility(ability) {
@@ -38,6 +38,10 @@ class Unit extends GameObject{
             this.sendMsg("death", {});
             this.dead = true;
             console.log(`${this.toString()} killed by ${attacker.toString()}`);
+            // clip
+            // this.removeFromParent();
+            // recursively trigger removals
+            // this.remove();
         }
     }
     attack(targets) {

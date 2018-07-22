@@ -69,22 +69,18 @@ class CharGraphics extends GameObject {
     }
 }
 
-class BasicSVG extends GameObject {
+class SvgGraphics extends GameObject {
     constructor(parent, svg, size, colour="blue") {
         // parent is a unit
-        super(parent, false, "svgGraphics");
+        super(parent, false, 'svgGraphics', 'svgGraphics');
         this.svg = svg;
         this.size = size;
         this.colour = colour;
         this.name += `-${this.id}`;
-        this.type = 'svgGraphics'
         if (!svg) {
             console.warn(`Parent for ${this.name} is ${svg}`);
         }
     }
-    // removeFromParent() {
-        // super.removeFromParent();
-    // }
     remove() {
         this.ship.remove();
     }
@@ -179,4 +175,4 @@ function makeShip(svg, x, y, size=30) {
     return g;
 }
 
-module.exports = { CharGraphics, BasicSVG };
+module.exports = { CharGraphics, SvgGraphics };

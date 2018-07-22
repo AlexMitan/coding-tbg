@@ -2,7 +2,7 @@ const { GameObject } = require('./GameObject');
 
 class World extends GameObject{
     constructor() {
-        super(null, false, "world");
+        super(null, false, 'world', 'world');
         this.stats = {
             deaths: {}
         }
