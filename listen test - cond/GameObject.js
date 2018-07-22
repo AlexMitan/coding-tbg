@@ -22,6 +22,15 @@ class GameObject {
         }
         return obj;
     }
+    rootPath() {
+        let obj = this;
+        let path = [this];
+        while (obj.parent != null) {
+            obj = obj.parent;
+            path.push(obj);
+        }
+        return path;
+    }
     receiveMsg(sender, str, data, nonPropCond=null) {
         if (nonPropCond && nonPropCond(this)) return;
         GameObject.messagesReceived += 1;

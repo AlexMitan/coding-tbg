@@ -1,16 +1,4 @@
 class ListenHash {
-    constructor(hash) {
-        this.hash = hash;
-    }
-    copy() {
-        return ListenHash.addHashes(this.hash);
-    }
-    add(...others) {
-        this.hash = ListenHash.addHashes(this, ...others);
-    }
-    sub(...others) {
-        this.hash = ListenHash.subtractHashes(this, ...others);
-    }
     static addHashes(...hashes) {
         let finalHash = {};
         for (let hash of hashes) {

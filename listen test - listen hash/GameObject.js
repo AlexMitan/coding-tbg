@@ -2,7 +2,7 @@ const utils = require('../lib/cmutils');
 const { ListenHash } = require('./ListenHash');
 
 class GameObject {
-    constructor(parent=null, addToParent=false, type='gameObject', name=null) {
+    constructor(parent=null, addToParent=false, type='gameObject', name=null, listenHash={}) {
         this.children = [];
         this.parent = parent;
         this.dead = false;
@@ -12,7 +12,7 @@ class GameObject {
         this.type = type;
         this.id = GameObject.id;
         this.name = name || `${this.type}-${this.id}`;
-        this.listenHash = new ListenHash({"cleanup": 1});
+        this.listenHash = ListenHash.addHashes(listenHash, {"cleanup": 1});
         GameObject.id += 1;
     }
     root() {
@@ -25,9 +25,8 @@ class GameObject {
         return obj;
     }
     rootPath() {
-        if (this.parent === null) return path;
         let obj = this;
-        let path = [];
+        let path = [this];
         while (obj.parent != null) {
             obj = obj.parent;
             path.push(obj);

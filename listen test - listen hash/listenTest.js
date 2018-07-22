@@ -83,11 +83,14 @@ let spellOrb2 = new GameObject(necromancer, true, 'misc', 'spellOrb2');
 // console.log(tile00.distanceTo(tile20));
 
 console.log(archer.rootPath().map(e => e.name));
+console.log(archer.rootPath().map(e => e.listenHash));
 console.log(spellOrb1.rootPath().map(e => e.name));
-let hash1 = new ListenHash({"damage": 2, "death": 1});
-let hash2 = new ListenHash({"heal": 1});
-let hash3 = new ListenHash({"damage": 1, "heal": 5});
-let hash4 = new ListenHash(ListenHash.addHashes(hash1, hash2, hash3));
-console.log(hash1);
+console.log(spellOrb1.rootPath().map(e => e.listenHash));
 
+let hash1 = {"damage": 2, "death": 1};
+let hash2 = {"heal": 1}
+let hash3 = {"damage": 1, "heal": 5};
+let hash4 = ListenHash.addHashes(hash1, hash2, hash3);
+
+console.log(hash4);
 console.log(ListenHash.subtractHashes(hash4, hash2, hash1));

@@ -23,9 +23,8 @@ class GameObject {
         return obj;
     }
     rootPath() {
-        if (this.parent === null) return path;
         let obj = this;
-        let path = [];
+        let path = [this];
         while (obj.parent != null) {
             obj = obj.parent;
             path.push(obj);
