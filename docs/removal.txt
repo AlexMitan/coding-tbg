@@ -2,3 +2,4 @@
  - Dead flag + cleanup vs direct removal?
  - removeChild - should it nullify the parent field?
  - addchild - should it set the parent field?
+ - addToParent etc: should parents be replaced and auto-removed on replace?

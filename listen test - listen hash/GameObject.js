@@ -2,17 +2,17 @@ const utils = require('../lib/cmutils');
 const { ListenHash } = require('./ListenHash');
 
 class GameObject {
-    constructor(parent=null, addToParent=false, type='gameObject', name=null, listenHash={}) {
+    constructor(parent=null, addToParent=false, type='gameObject', name=null, listenHash=null) {
         this.children = [];
         this.parent = parent;
         this.dead = false;
-        if (parent && addToParent) {
-            parent.addChild(this);
-        }
         this.type = type;
         this.id = GameObject.id;
         this.name = name || `${this.type}-${this.id}`;
-        this.listenHash = ListenHash.addHashes(listenHash, {"cleanup": 1});
+        this.listenHash = ListenHash.addHashes(listenHash === null ? {} : listenHash, {"cleanup": 1});
+        if (parent && addToParent) {
+            parent.addChild(this);
+        }
         GameObject.id += 1;
     }
     root() {
@@ -34,6 +34,10 @@ class GameObject {
         return path;
     }
     receiveMsg(sender, str, data) {
+        if (!this.listenHash[str]) {
+            console.log(`${this.name} refused ${str} from ${sender.name}`);
+            return false;
+        }
         GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it
         if (GameObject.logMessages) {
@@ -50,6 +54,7 @@ class GameObject {
                 child.receiveMsg(sender, str, data);
             }
         }
+        return true;
     }
     sendMsg(str, data) {
         // relay a message directly to the root, to be passed down
@@ -59,6 +64,11 @@ class GameObject {
         let childIdx = this.children.indexOf(gameObj);
         if (childIdx == -1){
             this.children.push(gameObj);
+            // gameObj.parent = this;
+            // update listenHashes
+            for (let obj of this.rootPath()) {
+                obj.listenHash = ListenHash.addHashes(obj.listenHash, gameObj.listenHash);
+            }
         }
     }
     // REMOVAL
@@ -67,6 +77,10 @@ class GameObject {
         let idx = this.children.indexOf(gameObj);
         if (idx > -1){
             this.children.splice(idx, 1);
+            // gameObj.parent = null;
+            for (let obj of this.rootPath()) {
+                obj.listenHash = ListenHash.subtractHashes(obj.listenHash, gameObj.listenHash);
+            }
         }
     }
     removeFromParent() {

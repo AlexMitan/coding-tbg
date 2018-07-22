@@ -2,7 +2,7 @@ const { GameObject } = require('./GameObject');
 const { ListenHash } = require('./ListenHash');
 
 class Tile extends GameObject {
-    constructor(parent, addtoParent, name, x, y) {
+    constructor(parent, addtoParent, name, x, y, listenHash={}) {
         super(parent, addtoParent, 'tile', name);
         this.x = x;
         this.y = y;
@@ -16,15 +16,15 @@ class Tile extends GameObject {
 }
 
 class Unit extends GameObject {
-    constructor(parent, addtoParent, hp, damage, name=null) {
-        super(parent, addtoParent, 'unit', name);
+    constructor(parent, addtoParent, hp, damage, name=null, listenHash={"damage": 1}) {
+        super(parent, addtoParent, 'unit', name, listenHash);
         this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
     }
 
     receiveMsg(sender, str, data) {
-        super.receiveMsg(sender, str, data);
+        if (!super.receiveMsg(sender, str, data)) return false;
         if (str === "damage") {
             // if unit in targets
             if (data.targets.indexOf(this) > -1) {
@@ -33,6 +33,7 @@ class Unit extends GameObject {
                 this.receiveDamage(damage, sender);
             }
         }
+        return true;
     }
     receiveDamage(damage, attacker) {
         this.hp -= damage;
@@ -69,28 +70,47 @@ let tile10 = new Tile(game, true, 'tile10', 1, 0);
 let archer = new Unit(tile10, true, 1, 4, 'archer');
 
 let tile20 = new Tile(game, true, 'tile20', 2, 0);
-let necromancer = new Unit(tile20, true, 1, 1, 'necro');
+let necromancer = new Unit(tile20, true, 1, 1, 'necro', {"death":1});
 let spellOrb1 = new GameObject(necromancer, true, 'misc', 'spellOrb1');
 let spellOrb2 = new GameObject(necromancer, true, 'misc', 'spellOrb2');
 
 
 
 // console.log(goblin.toString());
-// hero.attack([goblin]);
+hero.attack([goblin]);
 // console.log(goblin.toString());
 
-// console.log(GameObject);
+console.log(GameObject);
 // console.log(tile00.distanceTo(tile20));
 
-console.log(archer.rootPath().map(e => e.name));
-console.log(archer.rootPath().map(e => e.listenHash));
-console.log(spellOrb1.rootPath().map(e => e.name));
-console.log(spellOrb1.rootPath().map(e => e.listenHash));
 
-let hash1 = {"damage": 2, "death": 1};
-let hash2 = {"heal": 1}
-let hash3 = {"damage": 1, "heal": 5};
-let hash4 = ListenHash.addHashes(hash1, hash2, hash3);
+// console.log('initial paths');
+// console.log(archer.rootPath().map(e => e.name));
+// console.log(archer.rootPath().map(e => e.listenHash));
+// console.log();
+// console.log(spellOrb1.rootPath().map(e => e.name));
+// console.log(spellOrb1.rootPath().map(e => e.listenHash));
 
-console.log(hash4);
-console.log(ListenHash.subtractHashes(hash4, hash2, hash1));
+
+// console.log('removed spellorb 2');
+// necromancer.removeChild(spellOrb2);
+// console.log();
+// console.log(spellOrb1.rootPath().map(e => e.name));
+// console.log(spellOrb1.rootPath().map(e => e.listenHash));
+
+// console.log('removed necro');
+// necromancer.removeFromParent();
+// console.log();
+// console.log(spellOrb1.rootPath().map(e => e.name));
+// console.log(spellOrb1.rootPath().map(e => e.listenHash));
+// console.log();
+// console.log(archer.rootPath().map(e => e.name));
+// console.log(archer.rootPath().map(e => e.listenHash));
+
+// let hash1 = {"damage": 2, "death": 1};
+// let hash2 = {"heal": 1}
+// let hash3 = {"damage": 1, "heal": 5};
+// let hash4 = ListenHash.addHashes(hash1, hash2, hash3);
+
+// console.log(hash4);
+// console.log(ListenHash.subtractHashes(hash4, hash2, hash1));

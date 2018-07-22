@@ -54,6 +54,7 @@ class Unit extends GameObject {
             amount: this.damage,
             targets: targets,
             range: this.range
+        // });
         }, (node) => node.type === 'tile' && node.distanceTo(this.parent) > this.range);
     }
     toString() {
@@ -68,7 +69,7 @@ let game = new GameObject(null, false, 'game', 'roguelikeGame');
 // [h g] [a] [n] []
 
 let tile00 = new Tile(game, true, 'tile00', 0, 0);
-let hero = new Unit(tile00, true, 10, 1, 'hero');
+let hero = new Unit(tile00, true, 10, 5, 'hero');
 let goblin = new Unit(tile00, true, 4, 3, 'goblin');
 
 // let tile10 = new Tile(game, true, 'tile10', 1, 0);
@@ -83,9 +84,9 @@ let spellOrb2 = new GameObject(necromancer, true, 'misc', 'spellOrb2');
 
 let tile30 = new Tile(game, true, 'tile30', 3, 0);
 
-console.log(goblin.toString());
-// hero.attack([goblin]);
-necromancer.attack([goblin]);
-console.log(goblin.toString());
+// console.log(goblin.toString());
+hero.attack([goblin]);
+// necromancer.attack([goblin]);
+// console.log(goblin.toString());
 
-// console.log(GameObject);
+console.log(GameObject);
