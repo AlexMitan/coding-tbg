@@ -22,29 +22,35 @@ class GameObject {
         }
         return obj;
     }
-    receiveMsg(sender, str, data) {
+    shouldReceiveMsg(sender, str, data, nonPropCond=null) {
+        if (nonPropCond !== null && nonPropCond(this)){
+            console.log(`${this.name} refused ${str} from ${sender.name}`);
+            return false;
+        }
+        return true;
+    }
+    receiveMsg(sender, str, data, nonPropCond=null) {
+        if (!this.shouldReceiveMsg(sender, str, data, nonPropCond)) return;
         GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it
-        let passToChildren = true;
-        let log = false;
-        if (log) {
-            console.log(`${this.name} received ${str} from ${sender.name}`)
+        if (GameObject.logMessages) {
+            console.log(`${this.name} <-- ${str} from ${sender.name}`);
         }
         if (str === "cleanup" && this.dead === true) {
             console.log(`${this.name} is being cleaned up.`);
             this.removeFromParent();
-            this.remove();
         }
+        let passToChildren = true;
         if (passToChildren) {
             for (let i=this.children.length - 1; i>=0; i--){
                 let child = this.children[i];
-                child.receiveMsg(sender, str, data);
+                child.receiveMsg(sender, str, data, nonPropCond);
             }
         }
     }
-    sendMsg(str, data) {
+    sendMsg(str, data, nonPropCond=null) {
         // relay a message directly to the root, to be passed down
-        this.root().receiveMsg(this, str, data);
+        this.root().receiveMsg(this, str, data, nonPropCond);
     }
     addChild(gameObj) {
         let childIdx = this.children.indexOf(gameObj);
@@ -62,10 +68,9 @@ class GameObject {
         }
     }
     removeFromParent() {
-        // TODO: figure out if this should always be called in remove()
         if (this.parent !== null) {
-            this.parent = null;
             this.parent.removeChild(this);
+            this.parent = null;
         }
     }
     remove() {

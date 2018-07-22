@@ -1,0 +1,2 @@
+ - Should items always remove themselves from their parent before removing themselves via remove()?
+ - Dead flag + cleanup vs direct removal?
