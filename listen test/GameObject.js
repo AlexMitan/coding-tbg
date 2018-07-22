@@ -22,6 +22,16 @@ class GameObject {
         }
         return obj;
     }
+    rootPath() {
+        if (this.parent === null) return path;
+        let obj = this;
+        let path = [];
+        while (obj.parent != null) {
+            obj = obj.parent;
+            path.push(obj);
+        }
+        return path;
+    }
     receiveMsg(sender, str, data) {
         GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it

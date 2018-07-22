@@ -9,8 +9,8 @@ class GameObject {
             parent.addChild(this);
         }
         this.type = type;
-        this.name = name;
         this.id = GameObject.id;
+        this.name = name || `${this.type}-${this.id}`;
         GameObject.id += 1;
     }
     root() {
@@ -21,6 +21,16 @@ class GameObject {
             obj = obj.parent;
         }
         return obj;
+    }
+    rootPath() {
+        if (this.parent === null) return path;
+        let obj = this;
+        let path = [];
+        while (obj.parent != null) {
+            obj = obj.parent;
+            path.push(obj);
+        }
+        return path;
     }
     receiveMsg(sender, str, data) {
         GameObject.messagesReceived += 1;

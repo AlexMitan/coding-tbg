@@ -1,12 +1,11 @@
 const { GameObject } = require('./GameObject');
 
 class Unit extends GameObject{
-    constructor(parent, hp, damage, name="drone") {
-        super(parent, false, 'unit', name);
+    constructor(parent, hp, damage) {
+        super(parent, false, 'unit');
         this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
-        this.name += `-${this.id}`;
     }
     // set group(val) {}
     // addAbility(ability) {

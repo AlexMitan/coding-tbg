@@ -72,7 +72,7 @@ class CharGraphics extends GameObject {
 class SvgGraphics extends GameObject {
     constructor(parent, svg, size, colour="blue") {
         // parent is a unit
-        super(parent, false, 'svgGraphics', 'svgGraphics');
+        super(parent, false, 'svgGraphics');
         this.svg = svg;
         this.size = size;
         this.colour = colour;

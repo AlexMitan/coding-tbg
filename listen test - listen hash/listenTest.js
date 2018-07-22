@@ -1,4 +1,5 @@
 const { GameObject } = require('./GameObject');
+const { ListenHash } = require('./ListenHash');
 
 class Tile extends GameObject {
     constructor(parent, addtoParent, name, x, y) {
@@ -9,25 +10,21 @@ class Tile extends GameObject {
     distanceTo(tile) {
         return Math.abs(tile.x - this.x) + Math.abs(tile.y - this.y);
     }
-    // receiveMsg(sender, str, data, nonPropCond) {
-    //     super.receiveMsg(sender, str, data, nonPropCond);
-    // }
+    receiveMsg(sender, str, data) {
+        super.receiveMsg(sender, str, data);
+    }
 }
 
 class Unit extends GameObject {
-    constructor(parent, addtoParent, hp, damage, name="drone") {
+    constructor(parent, addtoParent, hp, damage, name=null) {
         super(parent, addtoParent, 'unit', name);
         this.damage = damage;
         this.hp = hp;
         this.baseHp = hp;
-        this.range = 0;
-        this.name += `-${this.id}`;
     }
 
-    receiveMsg(sender, str, data, nonPropCond) {
-        // TODO, HACK: this needs to be copied on every class
-        if (nonPropCond && nonPropCond(this)) return;
-        super.receiveMsg(sender, str, data, nonPropCond);
+    receiveMsg(sender, str, data) {
+        super.receiveMsg(sender, str, data);
         if (str === "damage") {
             // if unit in targets
             if (data.targets.indexOf(this) > -1) {
@@ -52,9 +49,8 @@ class Unit extends GameObject {
     attack(targets) {
         this.sendMsg("damage", {
             amount: this.damage,
-            targets: targets,
-            range: this.range
-        }, (node) => node.type === 'tile' && node.distanceTo(this.parent) > this.range);
+            targets: targets
+        });
     }
     toString() {
         // return `[${this.dead ? "dead " : ""}${this.name} ${this.hp}]`;
@@ -65,27 +61,33 @@ class Unit extends GameObject {
 GameObject.logMessages = true;
 let game = new GameObject(null, false, 'game', 'roguelikeGame');
 
-// [h g] [a] [n] []
-
 let tile00 = new Tile(game, true, 'tile00', 0, 0);
-let hero = new Unit(tile00, true, 10, 1, 'hero');
+let hero = new Unit(tile00, true, 10, 5, 'hero');
 let goblin = new Unit(tile00, true, 4, 3, 'goblin');
 
-// let tile10 = new Tile(game, true, 'tile10', 1, 0);
-// let archer = new Unit(tile10, true, 1, 4, 'archer');
-// archer.range = 1;
+let tile10 = new Tile(game, true, 'tile10', 1, 0);
+let archer = new Unit(tile10, true, 1, 4, 'archer');
 
 let tile20 = new Tile(game, true, 'tile20', 2, 0);
 let necromancer = new Unit(tile20, true, 1, 1, 'necro');
-necromancer.range = 3;
 let spellOrb1 = new GameObject(necromancer, true, 'misc', 'spellOrb1');
 let spellOrb2 = new GameObject(necromancer, true, 'misc', 'spellOrb2');
 
-let tile30 = new Tile(game, true, 'tile30', 3, 0);
 
-console.log(goblin.toString());
+
+// console.log(goblin.toString());
 // hero.attack([goblin]);
-necromancer.attack([goblin]);
-console.log(goblin.toString());
+// console.log(goblin.toString());
 
 // console.log(GameObject);
+// console.log(tile00.distanceTo(tile20));
+
+console.log(archer.rootPath().map(e => e.name));
+console.log(spellOrb1.rootPath().map(e => e.name));
+let hash1 = new ListenHash({"damage": 2, "death": 1});
+let hash2 = new ListenHash({"heal": 1});
+let hash3 = new ListenHash({"damage": 1, "heal": 5});
+let hash4 = new ListenHash(ListenHash.addHashes(hash1, hash2, hash3));
+console.log(hash1);
+
+console.log(ListenHash.subtractHashes(hash4, hash2, hash1));

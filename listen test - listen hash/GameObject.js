@@ -1,4 +1,5 @@
 const utils = require('../lib/cmutils');
+const { ListenHash } = require('./ListenHash');
 
 class GameObject {
     constructor(parent=null, addToParent=false, type='gameObject', name=null) {
@@ -9,8 +10,9 @@ class GameObject {
             parent.addChild(this);
         }
         this.type = type;
-        this.name = name;
         this.id = GameObject.id;
+        this.name = name || `${this.type}-${this.id}`;
+        this.listenHash = new ListenHash({"cleanup": 1});
         GameObject.id += 1;
     }
     root() {
@@ -22,12 +24,21 @@ class GameObject {
         }
         return obj;
     }
-    receiveMsg(sender, str, data, nonPropCond=null) {
-        if (nonPropCond && nonPropCond(this)) return;
+    rootPath() {
+        if (this.parent === null) return path;
+        let obj = this;
+        let path = [];
+        while (obj.parent != null) {
+            obj = obj.parent;
+            path.push(obj);
+        }
+        return path;
+    }
+    receiveMsg(sender, str, data) {
         GameObject.messagesReceived += 1;
         // handle a message, and by default pass it to children and log it
         if (GameObject.logMessages) {
-            console.log(`${this.name} <-- ${str} from ${sender.name}`);
+            console.log(`${this.name} <-- ${str} from ${sender.name}`)
         }
         if (str === "cleanup" && this.dead === true) {
             console.log(`${this.name} is being cleaned up.`);
@@ -37,13 +48,13 @@ class GameObject {
         if (passToChildren) {
             for (let i=this.children.length - 1; i>=0; i--){
                 let child = this.children[i];
-                child.receiveMsg(sender, str, data, nonPropCond);
+                child.receiveMsg(sender, str, data);
             }
         }
     }
-    sendMsg(str, data, nonPropCond=null) {
+    sendMsg(str, data) {
         // relay a message directly to the root, to be passed down
-        this.root().receiveMsg(this, str, data, nonPropCond);
+        this.root().receiveMsg(this, str, data);
     }
     addChild(gameObj) {
         let childIdx = this.children.indexOf(gameObj);
@@ -51,7 +62,6 @@ class GameObject {
             this.children.push(gameObj);
         }
     }
-
     // REMOVAL
     removeChild(gameObj){
         // remove a child from the children array
